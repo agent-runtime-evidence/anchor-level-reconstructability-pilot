@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question about the manuscript
+    url: https://arxiv.org/
+    about: For questions about the underlying arXiv preprint (interpretation, scope, framing) please refer to the manuscript text first; this repository tracks reproducibility issues only.
+  - name: Decision Trace Reconstructor
+    url: https://github.com/governance-evidence/decision-trace-reconstructor
+    about: For bugs or feature requests in the Decision Trace Reconstructor itself, please file an issue in that repository instead.
+  - name: Operational Evidence Plane
+    url: https://github.com/agent-runtime-evidence/operational-evidence-plane
+    about: For bugs or feature requests in the Operational Evidence Plane reference implementation, please file an issue in that repository instead.

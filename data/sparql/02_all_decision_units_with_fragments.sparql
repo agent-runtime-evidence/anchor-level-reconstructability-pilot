@@ -1,0 +1,35 @@
+## All Decision Units with their fragment kind counts
+##
+## Returns one row per Decision Unit in the loaded trace.jsonld graph,
+## along with a count of fragments grouped by fragment kind. This is the
+## graph-shape overview query — it answers "what's in this regime's
+## decision unit?" before drilling into individual properties.
+##
+## Useful for cross-checking that a regime's anchor produced the expected
+## shape of fragments. For example, a Bedrock anchor should have
+## fragment kinds drawn from {config_snapshot, agent_message, model_generation,
+## retrieval_result, tool_call, policy_snapshot, state_mutation, human_approval};
+## an MCP anchor will have a different distribution because MCP transports
+## evidence per JSON-RPC message rather than per step.
+##
+## Run example (Python rdflib):
+##   from rdflib import Graph
+##   g = Graph().parse(
+##       "data/results/openai_agents/01_dtr_anchor.report/trace.jsonld",
+##       format="json-ld")
+##   for row in g.query(
+##       open("data/sparql/02_all_decision_units_with_fragments.sparql").read()
+##   ):
+##       print(row)
+
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX demm: <https://decisiontrace.org/demm/v1#>
+
+SELECT ?decisionUnit ?fragmentKind (COUNT(?fragment) AS ?count)
+WHERE {
+  ?decisionUnit a demm:DecisionUnit ;
+                prov:hadMember ?fragment .
+  ?fragment demm:fragmentKind ?fragmentKind .
+}
+GROUP BY ?decisionUnit ?fragmentKind
+ORDER BY ?decisionUnit ?fragmentKind

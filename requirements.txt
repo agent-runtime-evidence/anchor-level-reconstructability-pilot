@@ -1,0 +1,15 @@
+# Paper 27 — Reproducibility regenerator pinned dependencies.
+# These are the only Python deps the regenerator script requires.
+# Install with:
+#   python3 -m pip install -r requirements.txt
+#
+# The regenerator (`reproduce_tables.py`) targets Python >= 3.9 (it uses the
+# `from __future__ import annotations` form for `dict[...]` / `list[...]`
+# / `X | None` annotations) and only needs PyYAML to parse manifest.yaml.
+# Decision Trace Reconstructor itself is NOT a dependency of the regenerator;
+# the regenerator consumes the committed feasibility.json outputs directly.
+# To re-execute DTR from scratch (Tier B in the README), install DTR v0.1.0
+# from the Zenodo deposit DOI 10.5281/zenodo.19851574 separately — that
+# install path is intentionally outside this lockfile.
+
+PyYAML==6.0.3

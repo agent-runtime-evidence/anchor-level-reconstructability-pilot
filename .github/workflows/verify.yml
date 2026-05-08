@@ -1,0 +1,109 @@
+name: verify
+
+# Runs Tier A reproducibility checks on every push and PR. The checks here
+# are the same ones a reader runs locally: checksum verification of every
+# pinned release artefact, regenerator regression diff against the committed
+# expected output, and a manifest schema sanity parse.
+#
+# CI is intentionally minimal: no DTR install, no from-scratch re-execution
+# (that is Tier B and out of scope per the README). The only failure modes
+# that should ever turn this red are accidental data corruption, manifest
+# drift, regenerator code regressions, or YAML / JSON malformation.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  tier-a-verify:
+    name: Tier A — checksums + regenerator regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned regenerator dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Verify all SHA-256 checksums (pinned release artefacts)
+        run: shasum -a 256 -c checksums.txt
+
+      - name: Run regenerator with built-in checksum verification
+        run: python3 reproduce_tables.py --verify-checksums > /tmp/regen_actual.txt
+
+      - name: Diff regenerator output against committed reference
+        run: diff /tmp/regen_actual.txt reference_output.md
+
+      - name: Parse manifest.yaml (schema sanity)
+        run: |
+          python3 - <<'PY'
+          import sys
+          import yaml
+          with open("manifest.yaml") as fh:
+              m = yaml.safe_load(fh)
+          required = [
+              "artefact",
+              "decision_trace_reconstructor",
+              "operational_evidence_plane",
+              "regimes",
+              "fragments_outputs",
+              "feasibility_outputs",
+              "trace_jsonld_outputs",
+              "reproducibility_tiers",
+              "scoring_rule",
+          ]
+          missing = [k for k in required if k not in m]
+          if missing:
+              sys.stderr.write(f"manifest.yaml missing top-level keys: {missing}\n")
+              sys.exit(1)
+          assert m["artefact"]["name"] == "Anchor-Level Reconstructability Pilot"
+          assert isinstance(m["regimes"], list) and len(m["regimes"]) == 8
+          assert m["scoring_rule"]["fully_fillable"] == 1.0
+          assert m["scoring_rule"]["opaque"] == 0.0
+          print("manifest.yaml: OK ({} regimes, {} feasibility outputs).".format(
+              len(m["regimes"]), len(m["feasibility_outputs"])
+          ))
+          PY
+
+      - name: Parse CITATION.cff (schema sanity)
+        run: |
+          python3 - <<'PY'
+          import sys
+          import yaml
+          with open("CITATION.cff") as fh:
+              c = yaml.safe_load(fh)
+          assert c["cff-version"] == "1.2.0"
+          assert c["title"] == "Anchor-Level Reconstructability Pilot"
+          assert c["version"] == "0.1.0"
+          authors = c["authors"]
+          assert any("Solozobov" == a.get("family-names") for a in authors)
+          print("CITATION.cff: OK ({} author(s)).".format(len(authors)))
+          PY
+
+      - name: Parse .zenodo.json (schema sanity)
+        run: |
+          python3 - <<'PY'
+          import json
+          import sys
+          with open(".zenodo.json") as fh:
+              z = json.load(fh)
+          assert "title" in z
+          assert "creators" in z
+          assert "license" in z
+          assert "upload_type" in z
+          print(".zenodo.json: OK (upload_type={}).".format(z["upload_type"]))
+          PY

@@ -1,0 +1,43 @@
+## Per-property reconstructability classification
+##
+## Returns the per-property reconstructability category that the Decision
+## Trace Reconstructor assigned for each Decision Unit in the loaded
+## trace.jsonld graph. This query mirrors the seven-row content of the
+## corresponding feasibility.json report but reads it directly from the
+## W3C PROV-O graph, demonstrating that the JSON-LD encoding preserves
+## the same property-level decision the manuscript reports.
+##
+## Each returned row carries:
+##   ?property — the Decision Event Schema property (inputs, policy_basis,
+##               operator_identity, authorization_envelope, reasoning_trace,
+##               output_action, post_condition_state)
+##   ?category — fully_fillable | partially_fillable | structurally_unfillable
+##               | opaque
+##   ?gap      — the per-property gap description if the category is not
+##               fully_fillable, otherwise blank
+##
+## Cross-check: SELECT category counts should match the corresponding
+## feasibility.json `feasibility_counts` block.
+##
+## Run example (Python rdflib):
+##   from rdflib import Graph
+##   g = Graph().parse(
+##       "data/results/oep/02_oep_specific.report/trace.jsonld",
+##       format="json-ld")
+##   for row in g.query(
+##       open("data/sparql/03_per_property_classification.sparql").read()
+##   ):
+##       print(row)
+
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX demm: <https://decisiontrace.org/demm/v1#>
+
+SELECT ?decisionUnit ?property ?category ?gap
+WHERE {
+  ?decisionUnit a demm:DecisionUnit ;
+                demm:perPropertyFeasibility ?propertyFeasibility .
+  ?propertyFeasibility demm:property ?property ;
+                       demm:category ?category .
+  OPTIONAL { ?propertyFeasibility demm:gap ?gap . }
+}
+ORDER BY ?decisionUnit ?property

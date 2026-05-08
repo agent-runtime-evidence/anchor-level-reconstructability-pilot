@@ -1,0 +1,412 @@
+# Anchor-Level Reconstructability Pilot — Reproducibility Manifest
+# Per-anchor origin metadata for the cross-regime reconstructability matrix
+# in the accompanying arXiv preprint.
+# Pinned: 2026-05-07 (manifest revision 5 — added per-regime fragments.json
+# and trace.jsonld pin/checksums per Tier 2 polish; manifest revision 4 was
+# the minor-revision strengthening with regime CLI commands and Tier A/B framing)
+# License: CC-BY-4.0 (manifest content); regenerator (reproduce_tables.py) is Apache-2.0.
+#
+# What this manifest pins:
+#   1. The DTR release deposit by content-addressed Zenodo DOI (canonical bit-identical pin).
+#   2. The exact per-regime CLI invocations (no flag drift from the manuscript).
+#   3. SHA-256 checksums for every anchor input and every committed pipeline
+#      output (fragments.json, feasibility.json, trace.jsonld), so a reader
+#      can verify that the regenerator script consumes bit-identical inputs
+#      and produces bit-identical Tables 2 and 3.
+#
+# What this manifest does NOT pin:
+#   - A separate DTR upstream Git commit hash. The Zenodo deposit
+#     (DOI 10.5281/zenodo.19851574) is content-addressed and is the canonical
+#     bit-identical pin for the v0.1.0 release; the upstream Git tag v0.1.0 in the
+#     repository at github.com/governance-evidence/decision-trace-reconstructor
+#     points to that release. From-scratch DTR re-execution is documented per
+#     regime below, but the package does not separately checksum-verify the
+#     end-to-end re-execution; it checksums the regenerator inputs and outputs.
+#
+# Reader verification (run from the repository root):
+#   bash scripts/verify_all.sh
+# Or step by step:
+#   python3 -m pip install -r requirements.txt
+#   shasum -a 256 -c checksums.txt
+#   python3 reproduce_tables.py --verify-checksums | diff - reference_output.md
+#   # Tables 2 and 3 must match the manuscript §5 byte-for-byte.
+
+artefact:
+  name: "Anchor-Level Reconstructability Pilot"
+  version: "0.1.0"
+  manifest_revision: 5
+  date: 2026-05-07
+  repository: "https://github.com/agent-runtime-evidence/anchor-level-reconstructability-pilot"
+  manifest_revision_history: |
+    Revision 5 (2026-05-07): added per-regime fragments_outputs and
+      trace_jsonld_outputs blocks with SHA-256 checksums, exposing the
+      DTR ingest-stage and reconstruct-stage JSON-LD provenance graph
+      outputs alongside the feasibility summaries.
+    Revision 4 (2026-05-07): strengthened reproducibility tier framing
+      with Zenodo content-addressed DOI pin, exact per-regime CLI
+      invocations, anchor-and-output SHA-256 checksums, and explicit
+      Tier A vs Tier B reproducibility tier statement.
+  related_publication:
+    title: "Property-Level Reconstructability of Agent Decisions: An Anchor-Level Pilot Across Vendor SDK Adapter Regimes"
+    author: "Solozobov, O."
+    year: 2026
+    type: arxiv-preprint
+    note: "arXiv DOI to be added after preprint posting; see CITATION.cff for the structured citation record."
+
+decision_trace_reconstructor:
+  version: v0.1.0
+  zenodo_doi: 10.5281/zenodo.19851574
+  github: https://github.com/governance-evidence/decision-trace-reconstructor
+  github_release_tag: v0.1.0
+  release_pin: zenodo_doi
+  release_pin_note: |
+    The Zenodo deposit at DOI 10.5281/zenodo.19851574 is content-addressed and
+    is the canonical bit-identical pin for the v0.1.0 release. A separate
+    upstream Git commit hash is not tracked here because the Zenodo deposit
+    serves the same function (bit-identical content reference); the upstream
+    repository's v0.1.0 tag points to the corresponding release.
+  license: Apache-2.0
+  install_note: |
+    Install DTR v0.1.0 from the Zenodo deposit (DOI 10.5281/zenodo.19851574)
+    or from the upstream GitHub repository at the v0.1.0 release tag. Adapter
+    set: bedrock, langsmith, anthropic, openai-agents, otlp, mcp, generic-jsonl.
+    No vendor SDK credentials are required; all anchor inputs are committed
+    here and read from local disk.
+  invocation_template: |
+    decision-trace ingest <adapter> --from-file <anchor> \
+      --architecture single_agent --stack-tier within_stack \
+      --state-mutation-tools "(write|exec|drop|delete|update)" \
+      --out fragments.json
+    decision-trace reconstruct fragments.json --out report/ --jsonld
+
+operational_evidence_plane:
+  version: v0.1.0
+  zenodo_doi: 10.5281/zenodo.20051037
+  github: https://github.com/agent-runtime-evidence/operational-evidence-plane
+  license: Apache-2.0
+  integration_directory: integrations/decision-trace-reconstructor/
+  notes: "Vendor-neutral exemplar column. The OEP-specific mapping configuration converts OEP record kinds (release manifest, agent-step event, OPA-backed permission packet, replay handle, deterministic eval) to Decision Trace Reconstructor fragment kinds. The OEP code-review-agent example uses a deterministic mocked LLM by repository design."
+
+# Per-regime anchor inputs.
+# Each anchor is the upstream Decision Trace Reconstructor v0.1.0 worked-example
+# pinned by integration tests; the upstream repo is the canonical origin.
+# Anchors are NOT real captured production traces. They are illustrative worked
+# examples designed by the upstream repository as adapter-coverage demonstrations.
+# Each regime entry now carries the exact per-regime CLI invocation (no
+# placeholder flags) and the SHA-256 of the anchor input as committed here.
+regimes:
+
+  - name: bedrock
+    adapter: bedrock
+    anchor_local_path: data/corpus/bedrock/01_dtr_anchor.json
+    anchor_sha256: 91dcd8eae1f804ac066712a91bb218af0719279f5359c6bd74a8cc116149eef1
+    upstream_origin: examples/bedrock_basic_agent/01_dtr_anchor.json (DTR v0.1.0 release)
+    anchor_kind: dtr_worked_example
+    license: Apache-2.0
+    notes: "Hand-crafted Bedrock trace export illustrative of the regime's emission policy; UUIDs and timestamps are placeholders."
+    command: |
+      decision-trace ingest bedrock \
+        --from-file data/corpus/bedrock/01_dtr_anchor.json \
+        --architecture single_agent --stack-tier within_stack \
+        --state-mutation-tools "(write|exec|drop|delete|update)" \
+        --out data/results/bedrock/01_dtr_anchor.fragments.json
+      decision-trace reconstruct \
+        data/results/bedrock/01_dtr_anchor.fragments.json \
+        --out data/results/bedrock/01_dtr_anchor.report/ --jsonld
+
+  - name: langsmith
+    adapter: langsmith
+    anchor_local_path: data/corpus/langsmith/01_dtr_anchor.json
+    anchor_sha256: 41c553419b4782718e4aae418c2c839a2b285d3ee5ec39a7d16541a5b722c4e4
+    upstream_origin: examples/langsmith_basic_agent/01_dtr_anchor.json (DTR v0.1.0 release)
+    anchor_kind: dtr_worked_example
+    license: Apache-2.0
+    notes: "Hand-crafted LangSmith trace export illustrative of the regime's emission policy; UUIDs and timestamps are placeholders."
+    command: |
+      decision-trace ingest langsmith \
+        --from-file data/corpus/langsmith/01_dtr_anchor.json \
+        --architecture single_agent --stack-tier within_stack \
+        --state-mutation-tools "(write|exec|drop|delete|update)" \
+        --out data/results/langsmith/01_dtr_anchor.fragments.json
+      decision-trace reconstruct \
+        data/results/langsmith/01_dtr_anchor.fragments.json \
+        --out data/results/langsmith/01_dtr_anchor.report/ --jsonld
+
+  - name: anthropic
+    adapter: anthropic
+    anchor_local_path: data/corpus/anthropic/01_dtr_anchor.jsonl
+    anchor_sha256: db2e0e803efd5f1de4c0d7b3b3744ae18c66d99ec779eed2091dd31704ebc7c7
+    upstream_origin: examples/anthropic_basic_agent/01_dtr_anchor.jsonl (DTR v0.1.0 release)
+    anchor_kind: dtr_worked_example
+    license: Apache-2.0
+    notes: "Hand-crafted Anthropic Messages-API content blocks (tool_use/tool_result) illustrative of the regime's emission policy."
+    command: |
+      decision-trace ingest anthropic \
+        --from-file data/corpus/anthropic/01_dtr_anchor.jsonl \
+        --architecture single_agent --stack-tier within_stack \
+        --state-mutation-tools "(write|exec|drop|delete|update)" \
+        --out data/results/anthropic/01_dtr_anchor.fragments.json
+      decision-trace reconstruct \
+        data/results/anthropic/01_dtr_anchor.fragments.json \
+        --out data/results/anthropic/01_dtr_anchor.report/ --jsonld
+
+  - name: openai_agents
+    adapter: openai-agents
+    anchor_local_path: data/corpus/openai_agents/01_dtr_anchor.json
+    anchor_sha256: 2da737727f79c5227f368f88809a74fbe73c0f1d81c1b93bdbac87839ab0b691
+    upstream_origin: examples/openai_agents_basic_agent/01_dtr_anchor.json (DTR v0.1.0 release)
+    anchor_kind: dtr_worked_example
+    license: Apache-2.0
+    notes: "Hand-crafted OpenAI Agents SDK trace export illustrative of the regime's emission policy."
+    command: |
+      decision-trace ingest openai-agents \
+        --from-file data/corpus/openai_agents/01_dtr_anchor.json \
+        --architecture single_agent --stack-tier within_stack \
+        --state-mutation-tools "(write|exec|drop|delete|update)" \
+        --out data/results/openai_agents/01_dtr_anchor.fragments.json
+      decision-trace reconstruct \
+        data/results/openai_agents/01_dtr_anchor.fragments.json \
+        --out data/results/openai_agents/01_dtr_anchor.report/ --jsonld
+
+  - name: otlp
+    adapter: otlp
+    anchor_local_path: data/corpus/otlp/01_dtr_anchor.json
+    anchor_sha256: f40f862c18227f39b972810e286716ea4e3b8fa2bcec8716bca8e128eea6480d
+    upstream_origin: examples/otlp_basic_agent/01_dtr_anchor.json (DTR v0.1.0 release)
+    anchor_kind: dtr_worked_example
+    license: Apache-2.0
+    notes: "Hand-crafted OTLP-Vertex span export illustrative of the OpenTelemetry GenAI semantic conventions and Vertex Cloud Trace emission policy."
+    command: |
+      decision-trace ingest otlp \
+        --from-file data/corpus/otlp/01_dtr_anchor.json \
+        --architecture single_agent --stack-tier within_stack \
+        --state-mutation-tools "(write|exec|drop|delete|update)" \
+        --out data/results/otlp/01_dtr_anchor.fragments.json
+      decision-trace reconstruct \
+        data/results/otlp/01_dtr_anchor.fragments.json \
+        --out data/results/otlp/01_dtr_anchor.report/ --jsonld
+
+  - name: mcp
+    adapter: mcp
+    anchor_local_path: data/corpus/mcp/01_dtr_anchor.jsonl
+    anchor_sha256: 1cdb323a35e9f489fd63a02205c339032163285219c8aa4301b49b386c98305c
+    upstream_origin: examples/mcp_basic_agent/01_dtr_anchor.jsonl (DTR v0.1.0 release)
+    anchor_kind: dtr_worked_example
+    license: Apache-2.0
+    notes: "Hand-crafted MCP JSON-RPC transcript illustrative of the protocol's session lifecycle."
+    command: |
+      decision-trace ingest mcp \
+        --from-file data/corpus/mcp/01_dtr_anchor.jsonl \
+        --architecture single_agent --stack-tier within_stack \
+        --state-mutation-tools "(write|exec|drop|delete|update)" \
+        --out data/results/mcp/01_dtr_anchor.fragments.json
+      decision-trace reconstruct \
+        data/results/mcp/01_dtr_anchor.fragments.json \
+        --out data/results/mcp/01_dtr_anchor.report/ --jsonld
+
+  - name: oep
+    adapter: generic-jsonl
+    adapter_mapping_config: data/corpus/oep/oep_mapping.yaml
+    adapter_mapping_config_sha256: 308b388977c4323a87c6fe8f7dab37ea26a3a167711c6f2dee94e4b28f1c692f
+    anchor_local_path: data/corpus/oep/02_oep_specific.jsonl
+    anchor_sha256: f4794719fef881484bfb28c61479bab46d5bffec335201b3267c41365d1d2c41
+    anchor_local_path_floor: data/corpus/oep/01_dtr_anchor.jsonl
+    anchor_sha256_floor: 815a358cba2aa1c7b4285a2d124844200e871a809a21250aa2b797a14862a4cd
+    upstream_origin: integrations/decision-trace-reconstructor/code_review_agent.jsonl (Operational Evidence Plane v0.1.0)
+    anchor_kind: dtr_worked_example
+    license: Apache-2.0
+    notes: "Operational Evidence Plane v0.1.0 code-review-agent example artefacts (release manifest, agent-step event, OPA-backed permission packet, replay handle, deterministic eval) converted to JSONL through the OEP-specific mapping config; deterministic mocked LLM emits no model-generation fragment by repository design. Two reports are produced: an OEP-aware report (canonical, used in §5 Table 2) and a generic-floor report (preserved for reference)."
+    command: |
+      # OEP-aware (canonical, used in §5 Table 2):
+      decision-trace ingest generic-jsonl \
+        --from-file data/corpus/oep/02_oep_specific.jsonl \
+        --mapping data/corpus/oep/oep_mapping.yaml \
+        --architecture single_agent --stack-tier within_stack \
+        --state-mutation-tools "(write|exec|drop|delete|update)" \
+        --out data/results/oep/02_oep_specific.fragments.json
+      decision-trace reconstruct \
+        data/results/oep/02_oep_specific.fragments.json \
+        --out data/results/oep/02_oep_specific.report/ --jsonld
+      # Generic floor (preserved for reference, not used in §5):
+      decision-trace ingest generic-jsonl \
+        --from-file data/corpus/oep/01_dtr_anchor.jsonl \
+        --architecture single_agent --stack-tier within_stack \
+        --state-mutation-tools "(write|exec|drop|delete|update)" \
+        --out data/results/oep/01_dtr_anchor.fragments.json
+      decision-trace reconstruct \
+        data/results/oep/01_dtr_anchor.fragments.json \
+        --out data/results/oep/01_dtr_anchor.report/ --jsonld
+
+  - name: replit_drop_database
+    adapter: pre-built fragment manifest (no ingest stage)
+    anchor_local_path: data/named_incidents/replit_drop_database/fragments.json
+    anchor_sha256: 5c62d2303b1e6b4b148e67cfdea2e96cdd3e298dd14ec127c1bd069cffb17aa4
+    upstream_origin: examples/replit_drop_database/ (DTR v0.1.0 release, public-record fragment manifest)
+    anchor_kind: public_record_reconstruction
+    license: Apache-2.0
+    notes: "Public-record fragment manifest of the Replit DROP DATABASE incident; this is the author's reconstruction of what is recoverable from public-record reporting, NOT a primary trace export from the Replit production system. The reconstruct stage is invoked directly on the pre-built fragment manifest; no ingest stage runs."
+    command: |
+      # No ingest stage — the public-record fragment manifest is pre-built and
+      # consumed directly by reconstruct.
+      decision-trace reconstruct \
+        data/named_incidents/replit_drop_database/fragments.json \
+        --out data/results/replit_drop_database/report/ --jsonld
+
+# Per-regime fragments.json (DTR ingest-stage outputs).
+# These are the intermediate artefacts produced by `decision-trace ingest`
+# and consumed by `decision-trace reconstruct`. They are pinned here so a
+# reader can verify the ingest stage independently of the reconstruct stage.
+# The Replit incident column does not have a fragments.json under
+# data/results/ because its anchor is a pre-built fragment manifest at
+# data/named_incidents/replit_drop_database/fragments.json (see regimes:
+# replit_drop_database; no ingest stage runs).
+fragments_outputs:
+  bedrock:
+    path: data/results/bedrock/01_dtr_anchor.fragments.json
+    sha256: 1a0479fda765a1ad2895ce4aec44ac7b61d9b0f7ffea006246366cacafc6c37b
+  langsmith:
+    path: data/results/langsmith/01_dtr_anchor.fragments.json
+    sha256: 16d0795110335904928ba3e206a4326a6d04d51fe96b8d4ca719698baed68ef4
+  anthropic:
+    path: data/results/anthropic/01_dtr_anchor.fragments.json
+    sha256: 9bc1e2956fe16273e3ce58eba245c02a959bfcb020a0e4b0d732148afbe9a451
+  openai_agents:
+    path: data/results/openai_agents/01_dtr_anchor.fragments.json
+    sha256: c230e25d93524ef9fd59083323306b6c3b31db4620225c8291a7bf3db3b9977d
+  otlp:
+    path: data/results/otlp/01_dtr_anchor.fragments.json
+    sha256: 5e83d8acc3cb47c542b2644594c5bac31a5b21c5b2a6ce527538f8ef2d6dd929
+  mcp:
+    path: data/results/mcp/01_dtr_anchor.fragments.json
+    sha256: 9de9a199c6bfab7ff08fc14f3b7daad41a22b2deae78498af15144e4d7d13858
+  oep_canonical:
+    path: data/results/oep/02_oep_specific.fragments.json
+    sha256: f3d04777c42bf834c97dbc422aa51b71c17bdc4360bbdd1aae52c1af9b97e647
+  oep_generic_floor:
+    path: data/results/oep/01_dtr_anchor.fragments.json
+    sha256: d078108887fb0a74984a18c6d297b769b0eda227e97f39a7da19361b4ec55f25
+  replit_drop_database:
+    note: "Anchor is itself a pre-built fragment manifest; no separate fragments.json under data/results/. See regimes.replit_drop_database.anchor_local_path."
+
+# Per-regime feasibility outputs (`feasibility.json`). Each path contains the
+# Decision Trace Reconstructor v0.1.0 reconstruct-stage output that populates
+# one column of the §5 Results matrix. Each entry now carries the SHA-256 of
+# the committed feasibility output so a reader can verify that the regenerator
+# script consumes bit-identical inputs to those used to populate the manuscript
+# tables.
+feasibility_outputs:
+  bedrock:
+    path: data/results/bedrock/01_dtr_anchor.report/feasibility.json
+    sha256: f6039caaaa4e8126c33edfa3ac284d1339f1cedbcad034a95f9a96686d4873e1
+  langsmith:
+    path: data/results/langsmith/01_dtr_anchor.report/feasibility.json
+    sha256: 61bda9935df5489affe95dc08d07bbfb2b55cfeb8071594e8a7e5fb580bd3d5b
+  anthropic:
+    path: data/results/anthropic/01_dtr_anchor.report/feasibility.json
+    sha256: e4927819ce7fb56daeed00337566570830d7a0fbea0cd08d81daa74e3a88aea9
+  openai_agents:
+    path: data/results/openai_agents/01_dtr_anchor.report/feasibility.json
+    sha256: aacc3ac42500592187e67248230b94ce1376300c1d2b5d4e0f7d91520c31f63a
+  otlp:
+    path: data/results/otlp/01_dtr_anchor.report/feasibility.json
+    sha256: 756fbf029a271035b8b51c5b9ebca2fe988147c214440a12d50e823187756c4c
+  mcp:
+    path: data/results/mcp/01_dtr_anchor.report/feasibility.json
+    sha256: 39b1c539eabdf041c3ef4bf1cb766a2f38c1cb0021ce7d1512ec966792a9a394
+  oep_canonical:
+    path: data/results/oep/02_oep_specific.report/feasibility.json
+    sha256: bc92e07602fed835373a427b8b9407beaa96959f79b06aa1c57dd4c2bacf1116
+  oep_generic_floor:
+    path: data/results/oep/01_dtr_anchor.report/feasibility.json
+    sha256: 78be5a7116c63e978cda0e98bd67e3ffce86e8a08a1c931b8077ea4c0bc6ee6e
+  replit_drop_database:
+    path: data/results/replit_drop_database/report/feasibility.json
+    sha256: 51509a6f9cbf3b6487e1dee43b0e245ccc96a8d83f5e12cd50f5cd692fbda3f2
+
+# Per-regime W3C PROV-O JSON-LD provenance graphs (DTR reconstruct-stage outputs).
+# Each trace.jsonld is the same provenance graph that the corresponding
+# feasibility.json summarises, encoded against the W3C PROV-O vocabulary
+# (Source: library_source_id=4903) and the DTR demm/v1 namespace at
+# https://decisiontrace.org/demm/v1#. SPARQL-queryable; see the reproducibility
+# README for one worked SPARQL example.
+trace_jsonld_outputs:
+  bedrock:
+    path: data/results/bedrock/01_dtr_anchor.report/trace.jsonld
+    sha256: 98d8e8a1c2504a973da29c9583bc3a8cbaa6832c4a65fa9c9839db293c31db4e
+  langsmith:
+    path: data/results/langsmith/01_dtr_anchor.report/trace.jsonld
+    sha256: 68901bac2f095040bad6cf018be8d44277e6fd4f3ef3879c25e2dd39a7e25f97
+  anthropic:
+    path: data/results/anthropic/01_dtr_anchor.report/trace.jsonld
+    sha256: 6e2750c75a1b7a8818d47c0afa594bb5615a6e1bf5b48a464b76e45a63134e6a
+  openai_agents:
+    path: data/results/openai_agents/01_dtr_anchor.report/trace.jsonld
+    sha256: 1aef1cb9126e677722533b41f841ebf602266d70457ebc6a2b616e694c20159b
+  otlp:
+    path: data/results/otlp/01_dtr_anchor.report/trace.jsonld
+    sha256: d6d6689363b9de4082f0dedfc28f22fa25be070656781d03d929bc446a753c51
+  mcp:
+    path: data/results/mcp/01_dtr_anchor.report/trace.jsonld
+    sha256: 0bae92e665415633ec082afa894bb6b0ce3aa1d85953e87b12fc0143d9701c86
+  oep_canonical:
+    path: data/results/oep/02_oep_specific.report/trace.jsonld
+    sha256: f7438d111076b25258725d925177c7668bb665fd97152362b356f99804ad1df0
+  oep_generic_floor:
+    path: data/results/oep/01_dtr_anchor.report/trace.jsonld
+    sha256: bf53c9f44e8561f11bb76f4f4d84861ac1abef07bc8501667ca2757a8931b5de
+  replit_drop_database:
+    path: data/results/replit_drop_database/report/trace.jsonld
+    sha256: ab0b64908b1116253660cd10e49c99cde1a350098a222c5e2bd3b0823c479b84
+
+# Reproducibility tier statement.
+# This package supports two distinct reproducibility tiers; the manuscript
+# claims only the first one as checksum-verified.
+reproducibility_tiers:
+  - tier: A
+    name: regenerator-input-and-output checksum verification
+    supported: true
+    description: |
+      All anchor inputs, mapping configs, fragments outputs, feasibility
+      outputs, and JSON-LD provenance graphs listed above carry SHA-256
+      checksums. The reproduce_tables.py script reads the committed
+      feasibility outputs and prints Tables 2 and 3 of §5 Results in
+      Markdown matching the manuscript text. A reader runs
+      `shasum -a 256 -c checksums.txt` to verify every pinned input and
+      output file is byte-identical to the version used to populate the
+      manuscript tables.
+  - tier: B
+    name: from-scratch DTR re-execution
+    supported: documented_only
+    description: |
+      Per-regime CLI commands are listed above. A reader installs DTR v0.1.0
+      from the Zenodo deposit (DOI 10.5281/zenodo.19851574) and runs the
+      commands; deterministic per-regime classification is expected because
+      the upstream repository gates the example anchors with integration
+      tests, but the package does NOT ship a separate end-to-end checksum
+      gate that would prove a from-scratch re-execution produced byte-identical
+      feasibility.json files. Reasons: (a) DTR install paths and timestamps
+      may differ across machines; (b) JSON serialisation order, whitespace,
+      or trailing-newline conventions may vary across runtimes; (c) the
+      package does not include a DTR install lockfile. Reader-verifiable
+      reproducibility for this paper rests on Tier A.
+
+# Scoring rule used by Tables 2 and 3 of the manuscript. Single auditable convention: the
+# governance-evidence score treats opaque as zero (the model deliberation
+# is not externally observable for governance purposes); DTR's native
+# completeness_pct field treats opaque as evidenced and therefore
+# disagrees with this paper's Table 2 by 1/7 in any column with one
+# opaque cell. The DTR-native field is preserved verbatim in each
+# feasibility.json and the paper does NOT use it.
+scoring_rule:
+  fully_fillable: 1.0
+  partially_fillable: 0.5
+  structurally_unfillable: 0.0
+  opaque: 0.0
+  rationale: "Opaque is scored zero in this paper because for governance-evidence purposes the model deliberation is not externally observable in a form the Decision Event Schema can categorise as evidenced. DTR's native completeness_pct treats opaque as evidenced (the property is present in the run); this paper applies a stricter governance score while preserving the DTR-native field verbatim in each feasibility.json for reference."
+  manuscript_label: "strict-governance-completeness pct"
+  manuscript_label_rationale: |
+    Table 2's summary row is labelled 'strict-governance-completeness pct'
+    rather than 'completeness pct' to disambiguate it from DTR's native
+    completeness_pct field, which treats opaque as evidenced and is
+    preserved verbatim in each feasibility.json but is not used in this
+    paper.

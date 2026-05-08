@@ -1,0 +1,62 @@
+# License — Anchor-Level Reconstructability Pilot
+
+This repository uses **per-file licensing** to keep code, documentation, and
+upstream-derived reproducibility artefacts separable:
+
+- **Code, automation, and query examples** — Apache License 2.0.
+  Full text: [`licenses/LICENSE-APACHE-2.0`](licenses/LICENSE-APACHE-2.0).
+
+- **Documentation and release metadata** — Creative Commons Attribution 4.0
+  International (CC-BY-4.0). Full text:
+  [`licenses/LICENSE-CC-BY-4.0`](licenses/LICENSE-CC-BY-4.0).
+
+- **Upstream-derived anchor inputs and DTR pipeline outputs** — Apache License
+  2.0, inherited from the Decision Trace Reconstructor and Operational Evidence
+  Plane release artefacts from which they are redistributed or derived.
+
+## Per-file license summary (SPDX-style)
+
+| File / directory | License |
+|---|---|
+| `reproduce_tables.py` | `Apache-2.0` |
+| `scripts/verify_all.sh` | `Apache-2.0` |
+| `.github/workflows/**` | `Apache-2.0` |
+| `data/sparql/**` | `Apache-2.0` |
+| `manifest.yaml` | `CC-BY-4.0` |
+| `checksums.txt` | `CC-BY-4.0` |
+| `requirements.txt` | `CC-BY-4.0` |
+| `README.md` | `CC-BY-4.0` |
+| `CHANGELOG.md` | `CC-BY-4.0` |
+| `CONTRIBUTING.md` | `CC-BY-4.0` |
+| `.zenodo.json` | `CC-BY-4.0` |
+| `.github/ISSUE_TEMPLATE/**` | `CC-BY-4.0` |
+| `reference_output.md` | `CC-BY-4.0` |
+| `LICENSE` (this file) | `CC-BY-4.0` |
+| `CITATION.cff` | `CC-BY-4.0` |
+| `data/corpus/**` | `Apache-2.0` (anchor inputs are upstream Decision Trace Reconstructor v0.1.0 release artefacts redistributed under their original license; see `manifest.yaml` `regimes[].license` per file) |
+| `data/results/**` | `Apache-2.0` (DTR pipeline outputs derived from `Apache-2.0`-licensed anchor inputs) |
+| `data/named_incidents/**` | `Apache-2.0` (Decision Trace Reconstructor v0.1.0 release artefact) |
+| `licenses/LICENSE-APACHE-2.0` | `Apache-2.0` |
+| `licenses/LICENSE-CC-BY-4.0` | `CC-BY-4.0` |
+
+## Upstream dependencies (separate repositories, separate licenses)
+
+This repository does NOT redistribute the Decision Trace Reconstructor (DTR)
+itself or the Operational Evidence Plane (OEP) reference implementation; both
+are referenced by Zenodo content-addressed DOI in `manifest.yaml`.
+
+- **Decision Trace Reconstructor v0.1.0** —
+  Apache-2.0, Zenodo DOI `10.5281/zenodo.19851574`,
+  GitHub `governance-evidence/decision-trace-reconstructor`.
+- **Operational Evidence Plane v0.1.0** —
+  Apache-2.0, Zenodo DOI `10.5281/zenodo.20051037`,
+  GitHub `agent-runtime-evidence/operational-evidence-plane`.
+
+## Attribution
+
+If you use this repository, please cite:
+
+> Solozobov, O. (2026). Property-Level Reconstructability of Agent Decisions:
+> An Anchor-Level Pilot Across Vendor SDK Adapter Regimes. arXiv preprint.
+
+See [`CITATION.cff`](CITATION.cff) for the structured citation record.

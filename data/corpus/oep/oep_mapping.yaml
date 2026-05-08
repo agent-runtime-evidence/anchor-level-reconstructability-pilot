@@ -1,0 +1,23 @@
+schema_version: "1.0"
+source_name: operational_evidence_plane_code_review_agent
+fields:
+  fragment_id: id
+  timestamp: ts
+  actor_id: actor_id
+  payload: null
+kind_field: kind
+kind_map:
+  manifest: config_snapshot
+  prompt: agent_message
+  policy: policy_snapshot
+  tool: tool_call
+  state: state_mutation
+  human: human_approval
+  final: agent_message
+skip_kinds: []
+state_mutation_predicate:
+  field: tool
+  matches_regex: (write|exec|drop|delete|update|insert|push|publish|inspect|read)
+stack_tier_field: tier
+stack_tier_default: within_stack
+architecture: single_agent

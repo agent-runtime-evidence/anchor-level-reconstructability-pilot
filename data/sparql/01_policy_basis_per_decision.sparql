@@ -1,0 +1,36 @@
+## Policy basis fragments per decision unit
+##
+## Returns every Decision Unit in the loaded W3C PROV-O / DEMM trace.jsonld
+## graph together with the policy-snapshot fragments that ground its
+## policy-basis property. This is the canonical query whose result the
+## per-regime "policy basis" cell of Table 2 summarises.
+##
+## Expected per-regime behaviour:
+##   - Bedrock, LangSmith, OpenAI, OEP: returns at least one row per
+##     decision unit with a non-null policy_id. Table 2 cell reads F.
+##   - Anthropic, OTLP-Vertex, MCP: returns zero rows (no policy_snapshot
+##     fragment was emitted). Table 2 cell reads S.
+##   - Replit incident: returns zero rows (the public-record reconstruction
+##     does not include an explicit policy_snapshot fragment). Table 2 cell
+##     reads S.
+##
+## Run example (Python rdflib):
+##   from rdflib import Graph
+##   g = Graph().parse(
+##       "data/results/bedrock/01_dtr_anchor.report/trace.jsonld",
+##       format="json-ld")
+##   for row in g.query(open("data/sparql/01_policy_basis_per_decision.sparql").read()):
+##       print(row)
+
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX demm: <https://decisiontrace.org/demm/v1#>
+
+SELECT ?decisionUnit ?fragment ?policyId
+WHERE {
+  ?decisionUnit a demm:DecisionUnit ;
+                prov:hadMember ?fragment .
+  ?fragment demm:fragmentKind "policy_snapshot" ;
+            demm:payload ?payload .
+  ?payload demm:policy_id ?policyId .
+}
+ORDER BY ?decisionUnit ?fragment

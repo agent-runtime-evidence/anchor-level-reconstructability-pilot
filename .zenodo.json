@@ -1,0 +1,72 @@
+{
+  "title": "Anchor-Level Reconstructability Pilot",
+  "version": "0.1.0",
+  "upload_type": "dataset",
+  "publication_date": "2026-05-07",
+  "language": "eng",
+  "description": "<p>Reproducibility artefact for the arXiv preprint <em>Property-Level Reconstructability of Agent Decisions: An Anchor-Level Pilot Across Vendor SDK Adapter Regimes</em> (Solozobov, 2026).</p><p>Pinned anchor inputs and Decision Trace Reconstructor v0.1.0 pipeline outputs (fragments, feasibility summaries, W3C PROV-O JSON-LD provenance graphs) for the per-property by per-regime reconstructability matrix populated across six vendor SDK adapter regimes (AWS Bedrock Agents, LangSmith, Anthropic Claude tool use, OpenAI Agents, OpenTelemetry GenAI Vertex, the Model Context Protocol), the Operational Evidence Plane vendor-neutral exemplar, and the Replit DROP DATABASE public-record reconstruction.</p><p>Includes a regenerator script that reproduces Tables 2 and 3 of the manuscript byte-for-byte from committed feasibility outputs under SHA-256 checksum verification, plus a worked SPARQL example for the JSON-LD provenance graphs. Two reproducibility tiers are supported: Tier A (pipeline-output checksum verification, fully claimed and supported) and Tier B (from-scratch Decision Trace Reconstructor re-execution, documented per regime but not separately checksum-verified).</p><p>Pilot scope is single-annotator, anchor-sized (n=1 per cell), and descriptive only.</p>",
+  "creators": [
+    {
+      "name": "Solozobov, Oleg",
+      "orcid": "0009-0009-0105-7459"
+    }
+  ],
+  "license": "other-open",
+  "access_right": "open",
+  "keywords": [
+    "decision-event-schema",
+    "decision-trace-reconstructor",
+    "agent-runtime-evidence",
+    "property-level-reconstructability",
+    "cross-regime-pilot",
+    "vendor-sdk-adapter-regimes",
+    "operational-evidence-plane",
+    "w3c-prov-o",
+    "reproducibility",
+    "arxiv-preprint",
+    "anchor-level",
+    "empirical-pilot",
+    "agent-evaluation",
+    "ai-runtime-evidence"
+  ],
+  "communities": [],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.19851574",
+      "relation": "isDerivedFrom",
+      "scheme": "doi",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "10.5281/zenodo.20051037",
+      "relation": "isDerivedFrom",
+      "scheme": "doi",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://github.com/governance-evidence/decision-trace-reconstructor",
+      "relation": "requires",
+      "scheme": "url",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://github.com/agent-runtime-evidence/operational-evidence-plane",
+      "relation": "requires",
+      "scheme": "url",
+      "resource_type": "software"
+    }
+  ],
+  "subjects": [
+    {
+      "term": "Computer Science — Software Engineering",
+      "identifier": "https://arxiv.org/list/cs.SE/recent",
+      "scheme": "url"
+    },
+    {
+      "term": "Computer Science — Artificial Intelligence",
+      "identifier": "https://arxiv.org/list/cs.AI/recent",
+      "scheme": "url"
+    }
+  ],
+  "notes": "This is a mixed-license open artefact. Code, automation, SPARQL query examples, upstream-derived anchor inputs, and Decision Trace Reconstructor pipeline outputs are Apache-2.0; documentation and release metadata are CC-BY-4.0. The per-file license summary is in the LICENSE file. The Decision Trace Reconstructor and Operational Evidence Plane referenced here are separate Apache-2.0 software artefacts with their own Zenodo deposits (10.5281/zenodo.19851574 and 10.5281/zenodo.20051037 respectively); this repository does not redistribute their source code."
+}

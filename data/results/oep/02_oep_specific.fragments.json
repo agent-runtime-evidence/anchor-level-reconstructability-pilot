@@ -1,0 +1,128 @@
+{
+  "scenario_id": "oep_code_review_agent",
+  "architecture": "single_agent",
+  "stack_tier": "within_stack",
+  "fragments": [
+    {
+      "fragment_id": "rmf_code_review_agent_2026_05_04_v0",
+      "timestamp": 1746316800.0,
+      "kind": "config_snapshot",
+      "stack_tier": "within_stack",
+      "actor_id": "artifact-pipeline",
+      "payload": {
+        "release_name": "code-review-agent-local-demo",
+        "release_version": "0.0.0",
+        "layer_bindings": [
+          "model",
+          "prompt",
+          "tool_schema",
+          "policy",
+          "workflow",
+          "rollout",
+          "eval",
+          "data_state"
+        ],
+        "scenario": "code-review-agent",
+        "schema_version": "oep.release_manifest.v0"
+      },
+      "parent_trace_id": "operational_evidence_plane_code_review_agent",
+      "decision_id_hint": null
+    },
+    {
+      "fragment_id": "prompt_review_diff_001",
+      "timestamp": 1746316800.5,
+      "kind": "agent_message",
+      "stack_tier": "within_stack",
+      "actor_id": "agent_code_review_local_demo",
+      "payload": {
+        "content": "Inspect synthetic repository diff diff_synthetic_001 for the code-review-agent local demo",
+        "release_manifest_id": "rmf_code_review_agent_2026_05_04_v0"
+      },
+      "parent_trace_id": "operational_evidence_plane_code_review_agent",
+      "decision_id_hint": null
+    },
+    {
+      "fragment_id": "pder_code_review_read_diff_0001",
+      "timestamp": 1746316801.0,
+      "kind": "policy_snapshot",
+      "stack_tier": "within_stack",
+      "actor_id": "opa",
+      "payload": {
+        "policy_engine": "opa",
+        "policy_id": "opa-tool-permission-policy",
+        "policy_package": "data.oep.permissions",
+        "policy_uri": "permissions/policy/tool_permissions.rego",
+        "decision_allow": true,
+        "matched_rule": "allow_local_code_review_diff_read",
+        "tool_call_id": "tool_read_diff_0001",
+        "schema_version": "oep.tool_permission_packet.v0"
+      },
+      "parent_trace_id": "operational_evidence_plane_code_review_agent",
+      "decision_id_hint": null
+    },
+    {
+      "fragment_id": "evt_code_review_agent_step_0001",
+      "timestamp": 1746316801.2,
+      "kind": "tool_call",
+      "stack_tier": "within_stack",
+      "actor_id": "agent_code_review_local_demo",
+      "payload": {
+        "tool": "read_diff",
+        "action_type": "inspect_diff",
+        "tool_call_id": "tool_read_diff_0001",
+        "permission_packet_ref": "pder_code_review_read_diff_0001",
+        "trace_id": "11111111111111111111111111111111",
+        "span_id": "2222222222222222",
+        "checkpoint_name": "review.diff.inspect",
+        "checkpoint_sequence": 1,
+        "schema_version": "oep.agent_step_event.v0",
+        "tool_name": "read_diff"
+      },
+      "parent_trace_id": "operational_evidence_plane_code_review_agent",
+      "decision_id_hint": null
+    },
+    {
+      "fragment_id": "evt_code_review_agent_step_0001_state",
+      "timestamp": 1746316801.2,
+      "kind": "state_mutation",
+      "stack_tier": "within_stack",
+      "actor_id": "agent_code_review_local_demo",
+      "payload": {
+        "tool_name": "read_diff"
+      },
+      "parent_trace_id": "operational_evidence_plane_code_review_agent",
+      "decision_id_hint": null
+    },
+    {
+      "fragment_id": "replay_code_review_agent_0001",
+      "timestamp": 1746316801.3,
+      "kind": "state_mutation",
+      "stack_tier": "within_stack",
+      "actor_id": "sqlite_replay_layer",
+      "payload": {
+        "tool": "write_replay_handle",
+        "replay_handle": "replay_code_review_agent_0001",
+        "state_ref": "demo/state/code_review_agent.sqlite#events/evt_code_review_agent_step_0001",
+        "deterministic": true,
+        "event_id": "evt_code_review_agent_step_0001"
+      },
+      "parent_trace_id": "operational_evidence_plane_code_review_agent",
+      "decision_id_hint": null
+    },
+    {
+      "fragment_id": "eval_code_review_agent_smoke_0001",
+      "timestamp": 1746316801.5,
+      "kind": "agent_message",
+      "stack_tier": "within_stack",
+      "actor_id": "agent_code_review_local_demo",
+      "payload": {
+        "content": "Deterministic smoke eval passed for the synthetic code-review trace; replay_ready trace bundle produced",
+        "eval_status": "passed",
+        "trace_id": "11111111111111111111111111111111",
+        "schema_version": "oep.eval_result.v0"
+      },
+      "parent_trace_id": "operational_evidence_plane_code_review_agent",
+      "decision_id_hint": null
+    }
+  ]
+}

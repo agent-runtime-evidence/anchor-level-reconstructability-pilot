@@ -1,0 +1,53 @@
+{
+  "scenario_id": "otlp_ingest",
+  "architecture": "single_agent",
+  "stack_tier": "within_stack",
+  "fragments": 6,
+  "units_detected": 3,
+  "completeness_pct": 57.1,
+  "dominant_mode": 4,
+  "dominant_break": "evidence_fragmentation",
+  "feasibility_counts": {
+    "fully_fillable": 3,
+    "partially_fillable": 0,
+    "structurally_unfillable": 3,
+    "opaque": 1
+  },
+  "per_property": [
+    {
+      "property": "inputs",
+      "category": "fully_fillable",
+      "gap": null
+    },
+    {
+      "property": "policy_basis",
+      "category": "structurally_unfillable",
+      "gap": "no policy_basis fragment in unit"
+    },
+    {
+      "property": "operator_identity",
+      "category": "fully_fillable",
+      "gap": null
+    },
+    {
+      "property": "authorization_envelope",
+      "category": "structurally_unfillable",
+      "gap": "no authorization_envelope fragment in unit"
+    },
+    {
+      "property": "reasoning_trace",
+      "category": "opaque",
+      "gap": null
+    },
+    {
+      "property": "output_action",
+      "category": "fully_fillable",
+      "gap": null
+    },
+    {
+      "property": "post_condition_state",
+      "category": "structurally_unfillable",
+      "gap": "no post_condition_state fragment in unit"
+    }
+  ]
+}

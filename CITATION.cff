@@ -1,0 +1,82 @@
+cff-version: 1.2.0
+message: |
+  If you use this reproducibility artefact, please cite both the artefact and
+  the underlying arXiv preprint.
+title: "Anchor-Level Reconstructability Pilot"
+abstract: |
+  Reproducibility artefact for the arXiv preprint "Property-Level
+  Reconstructability of Agent Decisions: An Anchor-Level Pilot Across
+  Vendor SDK Adapter Regimes". Pinned anchor inputs and Decision Trace
+  Reconstructor pipeline outputs (fragments, feasibility, W3C PROV-O
+  JSON-LD provenance graphs) for the per-property by per-regime
+  reconstructability matrix populated by six vendor SDK adapter regimes
+  (AWS Bedrock Agents, LangSmith, Anthropic Claude tool use, OpenAI
+  Agents, OpenTelemetry GenAI Vertex, the Model Context Protocol), the
+  Operational Evidence Plane vendor-neutral exemplar, and the Replit
+  DROP DATABASE public-record reconstruction. Includes a regenerator
+  script that reproduces Tables 2 and 3 of the manuscript byte-for-byte
+  from committed feasibility outputs under SHA-256 checksum verification.
+
+type: dataset
+version: "0.1.0"
+date-released: "2026-05-07"
+
+authors:
+  - given-names: Oleg
+    family-names: Solozobov
+    orcid: "https://orcid.org/0009-0009-0105-7459"
+
+repository-code: "https://github.com/agent-runtime-evidence/anchor-level-reconstructability-pilot"
+
+license:
+  - Apache-2.0
+  - CC-BY-4.0
+
+license-url: "https://github.com/agent-runtime-evidence/anchor-level-reconstructability-pilot/blob/main/LICENSE"
+
+keywords:
+  - decision-event-schema
+  - decision-trace-reconstructor
+  - agent-runtime-evidence
+  - property-level-reconstructability
+  - cross-regime-pilot
+  - vendor-sdk-adapter-regimes
+  - operational-evidence-plane
+  - w3c-prov-o
+  - reproducibility
+  - arxiv-preprint
+  - anchor-level
+  - empirical-pilot
+
+preferred-citation:
+  type: article
+  title: "Property-Level Reconstructability of Agent Decisions: An Anchor-Level Pilot Across Vendor SDK Adapter Regimes"
+  authors:
+    - given-names: Oleg
+      family-names: Solozobov
+      orcid: "https://orcid.org/0009-0009-0105-7459"
+  year: 2026
+  publisher:
+    name: "arXiv"
+
+references:
+  - type: software
+    title: "Decision Trace Reconstructor"
+    authors:
+      - given-names: Oleg
+        family-names: Solozobov
+        orcid: "https://orcid.org/0009-0009-0105-7459"
+    version: "v0.1.0"
+    doi: "10.5281/zenodo.19851574"
+    license: Apache-2.0
+    repository-code: "https://github.com/governance-evidence/decision-trace-reconstructor"
+  - type: software
+    title: "Operational Evidence Plane"
+    authors:
+      - given-names: Oleg
+        family-names: Solozobov
+        orcid: "https://orcid.org/0009-0009-0105-7459"
+    version: "v0.1.0"
+    doi: "10.5281/zenodo.20051037"
+    license: Apache-2.0
+    repository-code: "https://github.com/agent-runtime-evidence/operational-evidence-plane"
