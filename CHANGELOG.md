@@ -23,6 +23,8 @@ Initial public release accompanying the arXiv preprint
 *Property-Level Reconstructability of Agent Decisions: An Anchor-Level Pilot
 Across Vendor SDK Adapter Regimes* (Solozobov, 2026).
 
+**Zenodo DOI:** [`10.5281/zenodo.20077961`](https://doi.org/10.5281/zenodo.20077961)
+
 ### Added
 
 - **Pinned anchor inputs** for ten worked-example anchors across seven regimes:

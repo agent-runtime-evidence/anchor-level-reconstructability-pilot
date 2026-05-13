@@ -21,6 +21,17 @@ type: dataset
 version: "0.1.0"
 date-released: "2026-05-07"
 
+doi: "10.5281/zenodo.20077961"
+url: "https://doi.org/10.5281/zenodo.20077961"
+
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.20077961"
+    description: "Zenodo deposit DOI for the Anchor-Level Reconstructability Pilot v0.1.0"
+  - type: url
+    value: "https://github.com/agent-runtime-evidence/anchor-level-reconstructability-pilot"
+    description: "GitHub repository for the Anchor-Level Reconstructability Pilot"
+
 authors:
   - given-names: Oleg
     family-names: Solozobov
@@ -51,6 +62,15 @@ keywords:
 preferred-citation:
   type: article
   title: "Property-Level Reconstructability of Agent Decisions: An Anchor-Level Pilot Across Vendor SDK Adapter Regimes"
+  doi: "10.48550/arXiv.2605.12078"
+  url: "https://arxiv.org/abs/2605.12078"
+  identifiers:
+    - type: doi
+      value: "10.48550/arXiv.2605.12078"
+      description: "arXiv DOI for the accompanying preprint"
+    - type: url
+      value: "https://arxiv.org/abs/2605.12078"
+      description: "arXiv abstract page for the accompanying preprint"
   authors:
     - given-names: Oleg
       family-names: Solozobov

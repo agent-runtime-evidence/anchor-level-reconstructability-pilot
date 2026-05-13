@@ -1,10 +1,12 @@
 # Anchor-Level Reconstructability Pilot
 
 [![verify](https://github.com/agent-runtime-evidence/anchor-level-reconstructability-pilot/actions/workflows/verify.yml/badge.svg)](https://github.com/agent-runtime-evidence/anchor-level-reconstructability-pilot/actions/workflows/verify.yml)
+[![arXiv](https://img.shields.io/badge/arXiv-2605.12078-b31b1b.svg)](https://arxiv.org/abs/2605.12078)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20077961.svg)](https://doi.org/10.5281/zenodo.20077961)
 [![License: mixed Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-blue)](LICENSE)
 
 Reproducibility artefact for the arXiv preprint
-**"Property-Level Reconstructability of Agent Decisions: An Anchor-Level Pilot Across Vendor SDK Adapter Regimes"** (Solozobov, 2026).
+**"Property-Level Reconstructability of Agent Decisions: An Anchor-Level Pilot Across Vendor SDK Adapter Regimes"** (Solozobov, 2026), [arXiv:2605.12078](https://arxiv.org/abs/2605.12078), DOI [`10.48550/arXiv.2605.12078`](https://doi.org/10.48550/arXiv.2605.12078).
 
 This repository pins the inputs and outputs that populate the per-property by per-regime reconstructability matrix (Table 2 of the manuscript) and the strict-score descriptive summary (Table 3 of the manuscript). It is a **standalone reproducibility package**, not the implementation of the Decision Trace Reconstructor or the Operational Evidence Plane — both are referenced as separate Apache-2.0 repositories with content-addressed Zenodo deposits (see [`manifest.yaml`](manifest.yaml)).
 
@@ -206,11 +208,17 @@ Per-file license summary is in [`LICENSE`](LICENSE).
 
 ## Citation
 
-See [`CITATION.cff`](CITATION.cff) for the structured citation record. Recommended citation:
+See [`CITATION.cff`](CITATION.cff) for the structured citation record.
 
-> Solozobov, O. (2026). Property-Level Reconstructability of Agent Decisions: An Anchor-Level Pilot Across Vendor SDK Adapter Regimes. arXiv preprint.
+**Cite the manuscript** (recommended for academic-paper citations):
 
-For the artefact itself (this repository), see [`.zenodo.json`](.zenodo.json) for the Zenodo deposit metadata; once published, cite using the Zenodo DOI.
+> Solozobov, O. (2026). Property-Level Reconstructability of Agent Decisions: An Anchor-Level Pilot Across Vendor SDK Adapter Regimes. arXiv:2605.12078. [https://doi.org/10.48550/arXiv.2605.12078](https://doi.org/10.48550/arXiv.2605.12078)
+
+**Cite this reproducibility artefact** (recommended when reusing the pinned anchor inputs, pipeline outputs, regenerator script, or SPARQL queries):
+
+> Solozobov, O. (2026). Anchor-Level Reconstructability Pilot (v0.1.0). Zenodo. [https://doi.org/10.5281/zenodo.20077961](https://doi.org/10.5281/zenodo.20077961)
+
+The Zenodo deposit metadata is in [`.zenodo.json`](.zenodo.json).
 
 ## Contributing
 
